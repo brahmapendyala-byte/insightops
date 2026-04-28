@@ -1,0 +1,49 @@
+name: InsightOps CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 pytest
+        # Install lightweight deps only for CI (no heavy CV models)
+        pip install pandas numpy python-dotenv reportlab Pillow
+
+    - name: Lint with flake8
+      run: |
+        # Stop build for syntax errors
+        flake8 . --count --select=E9,F63,F7,F82 \
+          --show-source --statistics \
+          --exclude=.venv,__pycache__
+
+    - name: Check .env not committed
+      run: |
+        if [ -f .env ]; then
+          echo "ERROR: .env file should not be committed!"
+          exit 1
+        fi
+        echo "✓ No .env file found"
+
+    - name: Check input folder is empty
+      run: |
+        if ls input/*.mp4 input/*.jpg 2>/dev/null; then
+          echo "ERROR: Real footage/photos should not be committed!"
+          exit 1
+        fi
+        echo "✓ Input folder contains no media files"
