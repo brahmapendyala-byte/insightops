@@ -8,7 +8,7 @@ opencv-python>=4.8
 onnxruntime>=1.16
 
 # Data layer
-pandas>=2.0
+pandas>=2.2.0
 numpy>=1.24
 
 # Azure
@@ -19,6 +19,6 @@ openai>=1.0
 python-dotenv>=1.0
 
 # Output
-reportlab>=4.0
-streamlit>=1.30
+reportlab>=4.2.0
+streamlit>=1.36.0
 Pillow>=10.0
